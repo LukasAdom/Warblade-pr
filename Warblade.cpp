@@ -13,12 +13,15 @@ int main(void)
     //--------------------------------------------------------------------------------------
     const int screenWidth = 800;
     const int screenHeight = 450;
+    const float playerAccel = 1.0f;
 
     // Texture/Sprite initializations ALWAYS goes AFTER window initialization
     InitWindow(screenWidth, screenHeight, "raylib [core] example - input keys");
 
     Player player;
-    const float playerAccel = 1.0f;
+    // TODO: create a global entity vector with type unique_ptr for easier application of .applyVelocity() and .Draw()
+    // it would be able to store every polymorth of entity such as player, enemy, projectile etc. in 1 vector
+
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -28,10 +31,10 @@ int main(void)
     {
         // Update
  	    //----------------------------------------------------------------------------------
-        if (IsKeyDown(KEY_RIGHT)) player.updateVelocity(playerAccel, 0.0f);
-        if (IsKeyDown(KEY_LEFT)) player.updateVelocity(-playerAccel, 0.0f);
-        if (IsKeyDown(KEY_UP)) player.updateVelocity(0.0f, -playerAccel);
-        if (IsKeyDown(KEY_DOWN)) player.updateVelocity(0.0f, playerAccel);
+        if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) player.updateVelocity(playerAccel, 0.0f);
+        if (IsKeyDown(KEY_LEFT)  || IsKeyDown(KEY_A)) player.updateVelocity(-playerAccel, 0.0f);
+        if (IsKeyDown(KEY_UP)    || IsKeyDown(KEY_W)) player.updateVelocity(0.0f, -playerAccel);
+        if (IsKeyDown(KEY_DOWN)  || IsKeyDown(KEY_S)) player.updateVelocity(0.0f, playerAccel);
 
         player.applyVelocity();
         //----------------------------------------------------------------------------------
