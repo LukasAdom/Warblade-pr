@@ -14,7 +14,7 @@ struct Entity
     const raylib::Vector2 maxVelocity = {10.0f, 10.0f};
     const raylib::Vector2 minVelocity = -maxVelocity;
 
-    void setPos(int a, int b){
+    void setPos(float a, float b){
         this->pos = Vector2{a, b};
     }
 
@@ -66,9 +66,9 @@ struct Entity
 
         // Bounds check
         // TODO: Make it account for size of sprite and maybe find a less glitchy implementation
-        if (futurePosition.x < GetScreenWidth() 
+        if (futurePosition.x < virtualResolutions::VIRTUAL_WIDTH 
             && futurePosition.x >= 0 
-            && futurePosition.y < GetScreenHeight()
+            && futurePosition.y < virtualResolutions::VIRTUAL_HEIGHT
             && futurePosition.y >= 0){
             this->setPos(futurePosition);
             return this->pos;
@@ -96,10 +96,10 @@ struct Player : Entity
     }
 };
 
-//struct Enemy : Entity {
+struct Enemy : Entity {
     // Empty...
-//};
+};
 
-//struct Projectile : Entity {
+struct Projectile : Entity {
 
-//};
+};
