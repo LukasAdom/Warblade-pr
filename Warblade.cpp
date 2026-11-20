@@ -17,6 +17,7 @@ int main(void)
     InitWindow(screenWidth, screenHeight, "raylib [core] example - input keys");
 
     Player player;
+    const float playerAccel = 1.0f;
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -26,10 +27,12 @@ int main(void)
     {
         // Update
  	    //----------------------------------------------------------------------------------
-        //if (IsKeyDown(KEY_RIGHT)) ballPosition.x += 2.0f;
-        //if (IsKeyDown(KEY_LEFT)) ballPosition.x -= 2.0f;
-        //if (IsKeyDown(KEY_UP)) ballPosition.y -= 2.0f;
-        //if (IsKeyDown(KEY_DOWN)) ballPosition.y += 2.0f;
+        if (IsKeyDown(KEY_RIGHT)) player.updateVelocity(playerAccel, 0.0f);
+        if (IsKeyDown(KEY_LEFT)) player.updateVelocity(-playerAccel, 0.0f);
+        if (IsKeyDown(KEY_UP)) player.updateVelocity(0.0f, -playerAccel);
+        if (IsKeyDown(KEY_DOWN)) player.updateVelocity(0.0f, playerAccel);
+
+        player.applyVelocity();
         //----------------------------------------------------------------------------------
 
         // Draw
