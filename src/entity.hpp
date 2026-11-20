@@ -24,10 +24,10 @@ struct Player : Entity
     }
 };
 
-struct Enemy : Entity {
+//struct Enemy : Entity {
     // Empty...
-};
+//};
 
-struct Projectile : Entity {
+//struct Projectile : Entity {
 
-};
+//};
