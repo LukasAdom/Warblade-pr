@@ -7,7 +7,7 @@ struct Entity
 {
     raylib::Texture sprite;
     raylib::Rectangle hitBox;
-    raylib::Vector2 pos{0, 0};
+    raylib::Vector2 pos{250, 250};
     raylib::Vector2 velocity{0.0f, 0.0f};
     float rotation = 0.0f; // In radians
     const float dragScaler = 0.2f;
@@ -83,16 +83,17 @@ struct Player : Entity
     Player(){
 
         // TODO: Get an actually trasnparant PNG
-        Image ico = LoadImage("media/textures/player.png");
-        ImageResize(&ico, 50, 50); // From what I can tell textures can't be resized or edited after being loaded. Consider declaring sprite as image?
+        Player::setPos(Vector2{ 925, 825 });
+        Image ico = LoadImage("media/textures/playerOutline.png");
+        ImageResize(&ico, 93, 97); // From what I can tell textures can't be resized or edited after being loaded. Consider declaring sprite as image?
         sprite = LoadTextureFromImage(ico);
         UnloadImage(ico);
     }
 
     void Draw(){
         // Raylib throws an exception and dumps the core when the texture isn't correctly loaded
-        // so I'm not sure if this check is neccesary
-        if(IsTextureValid(sprite)) sprite.Draw(pos);
+        // so I'm not sure if this check is 
+        if (IsTextureValid(sprite)) sprite.Draw(pos);
     }
 };
 

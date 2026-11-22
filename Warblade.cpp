@@ -1,6 +1,8 @@
 #include "raylib-cpp.hpp"
 #include "src/entity.hpp"
 #include "src/tools.hpp"
+#include "src/menu.hpp"
+#include "src/time.hpp"
 #include <vector>
 #include <iostream>
 #include <algorithm>
@@ -38,11 +40,16 @@ int main(void)
         virtualResolutions::VIRTUAL_HEIGHT
     );
 
+    toggleFullSceenWindow(screenWidth, screenHeight);
 
     Player player;
     const float playerAccel = 1.0f;
 
-    Texture2D bg = LoadTexture("media/textures/background/space0.png");
+    int visible = ON;
+
+    timer timedt;
+
+    //Texture2D bg = LoadTexture("media/textures/background/space0.png");
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -84,10 +91,17 @@ int main(void)
 
         ClearBackground(RAYWHITE);
 
-        DrawTextureEx(bg, { 0, 0 }, 0.0f, 3.0f, WHITE);
+        DrawTextureEx(tex.loadSprite("space0.png", BACKGROUND), { 0, 0 }, 0.0f, 3.0f, WHITE);
 
-        player.Draw();
-
+        if (visible == ON) {
+            menuInit();         
+        }
+        
+        if (timedt.getDelta() >= 15.0f) {
+            visible = OFF;
+            player.Draw();
+        }
+        
         EndTextureMode();
 
 
@@ -118,10 +132,6 @@ int main(void)
                 0.0f,
                 WHITE
             );
-
-            //DrawTextureEx(bg, { 0, 0 }, 0.0f, 1.0f, WHITE);
-
-            //player.Draw();
 		EndDrawing();
         //----------------------------------------------------------------------------------
     }
