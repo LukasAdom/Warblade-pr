@@ -2,3 +2,5 @@
 warblade
 main
 build
+vcpkg.json
+vcpkg_installed

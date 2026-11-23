@@ -2,6 +2,7 @@
 #include "src/entity.hpp"
 #include "src/tools.hpp"
 #include <vector>
+#include "src/level_loader.hpp"
 
 //------------------------------------------------------------------------------------
 // Program main entry point
