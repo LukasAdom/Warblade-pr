@@ -45,8 +45,6 @@ int main(void)
     Player player;
     const float playerAccel = 1.0f;
 
-    int visible = ON;
-
     timer timedt;
 
     //Texture2D bg = LoadTexture("media/textures/background/space0.png");
@@ -93,15 +91,14 @@ int main(void)
 
         DrawTextureEx(tex.loadSprite("space0.png", BACKGROUND), { 0, 0 }, 0.0f, 3.0f, WHITE);
 
-        if (visible == ON) {
+        if (menuVisible == visible::ON) {
             menuInit();         
         }
         
-        if (timedt.getDelta() >= 15.0f) {
-            visible = OFF;
+        if (menuVisible == visible::OFF) {
             player.Draw();
         }
-        
+
         EndTextureMode();
 
 
