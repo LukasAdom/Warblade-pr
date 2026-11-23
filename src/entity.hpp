@@ -13,6 +13,7 @@ struct Entity
     const float dragScaler = 0.2f;
     const raylib::Vector2 maxVelocity = {10.0f, 10.0f};
     const raylib::Vector2 minVelocity = -maxVelocity;
+    int health;
 
     void setPos(float a, float b){
         this->pos = raylib::Vector2{a, b};
@@ -72,7 +73,7 @@ struct Entity
         raylib::Vector2 futurePosition = this->pos + this->velocity;
 
         // Bounds check
-        // TODO: Make it account for size of sprite and maybe find a less glitchy implementation
+        // TODO: Make it account for size of hitbox and maybe find a less glitchy implementation
         if (futurePosition.x < GetScreenWidth() 
             && futurePosition.x >= 0 
             && futurePosition.y < GetScreenHeight()
@@ -105,9 +106,9 @@ struct Player : Entity{
 };
 
 struct Enemy : Entity {
-    // Empty...
+    raylib::Rectangle hurtBox; // By making the hurtbox slightly smaller than the texture of the enemy we can improve the player experience in intense bullet hell moments
 };
 
 struct Projectile : Entity {
-
+    bool isFriendly; // To make sure player can't hit himself with his own projectiles
 };
