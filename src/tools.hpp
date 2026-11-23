@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_map>
 
+// Use this to declare what "type" the sprite is //
 enum spriteType {
 	BACKGROUND = 0,
 	ENTITY = 1,
@@ -11,6 +12,7 @@ enum spriteType {
 	UI = 3
 };
 
+// Virtual resolution for scaling //
 struct virtualResolutions{
 	static const int VIRTUAL_WIDTH = 1920;
 	static const int VIRTUAL_HEIGHT = 1080;
@@ -19,6 +21,9 @@ struct virtualResolutions{
 struct spriteHandler {
 
 	std::unordered_map<const char*, Texture2D> textures;
+
+	// Load the texture and cahces it inside an unordered map for faster lookup
+	// And to not cause memory leaks.
 
 	 Texture2D& loadSprite(const char* name, int spriteType) {
 		const char* prefix = "media/textures/";
