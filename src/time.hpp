@@ -1,6 +1,8 @@
 #pragma once
 #include "raylib-cpp.hpp"
 
+
+
 struct timer{
 	float elapsedTime = 0.0f;
 

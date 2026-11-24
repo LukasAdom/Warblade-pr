@@ -2,13 +2,19 @@
 #include "src/entity.hpp"
 #include "src/tools.hpp"
 #include "src/menu.hpp"
+#include "src/doom.hpp"
 #include "src/time.hpp"
 #include <vector>
 #include <iostream>
 #include <algorithm>
 
+enum class Scene
+{
+    MAIN_MENU,
+    GAME
+};
 
-void toggleFullSceenWindow(int windowW, int windowH) {
+static void toggleFullSceenWindow(int windowW, int windowH) {
     if (!IsWindowFullscreen()) {
         int monitor = GetCurrentMonitor();
 
@@ -34,13 +40,18 @@ int main(void)
     // Texture/Sprite initializations ALWAYS goes AFTER window initialization
     InitWindow(screenWidth, screenHeight, "raylib [core] example - input keys");
 
+    Scene currentScene = Scene::MAIN_MENU;
+    Dmelt doomTransition;
+
     // Don't be a dumbass like me and put the background or ANY initializations before the window initialization...
     RenderTexture2D bgRender = LoadRenderTexture(
         virtualResolutions::VIRTUAL_WIDTH,
         virtualResolutions::VIRTUAL_HEIGHT
     );
 
-    toggleFullSceenWindow(screenWidth, screenHeight);
+    doomTransition.init(virtualResolutions::VIRTUAL_WIDTH, virtualResolutions::VIRTUAL_HEIGHT);
+
+    //toggleFullSceenWindow(screenWidth, screenHeight);
 
     Player player;
     const float playerAccel = 1.0f;
@@ -84,52 +95,98 @@ int main(void)
         // Draw
         //----------------------------------------------------------------------------------
 
+        BeginDrawing();
+
+        ClearBackground(BLACK);
+
+        if (currentScene == Scene::MAIN_MENU &&
+            menuVisible == visible::OFF)
+        {
+            doomTransition.start(
+                [&]()
+                {
+                    DrawTextureEx(
+                        tex.loadSprite("space0.png", BACKGROUND),
+                        { 0, 0 },
+                        0.0f,
+                        3.0f,
+                        WHITE
+                    );
+
+                    menuInit();
+                },
+
+                [&]()
+                {
+                    test();
+                    player.Draw();
+                }
+            );
+
+            currentScene = Scene::GAME;
+        }
 
         BeginTextureMode(bgRender);
 
-        ClearBackground(RAYWHITE);
+        ClearBackground(BLACK);
 
-        DrawTextureEx(tex.loadSprite("space0.png", BACKGROUND), { 0, 0 }, 0.0f, 3.0f, WHITE);
-
-        if (menuVisible == visible::ON) {
-            menuInit();         
+        if (doomTransition.isActive())
+        {
+            doomTransition.update(GetFrameTime());
+            doomTransition.draw();
         }
-        
-        if (menuVisible == visible::OFF) {
-            player.Draw();
+        else
+        {
+            switch (currentScene)
+            {
+            case Scene::MAIN_MENU:
+
+                DrawTextureEx(
+                    tex.loadSprite("space0.png", BACKGROUND),
+                    { 0, 0 },
+                    0.0f,
+                    3.0f,
+                    WHITE
+                );
+
+                menuInit();
+                break;
+
+            case Scene::GAME:
+
+                test();
+                player.Draw();
+                break;
+            }
         }
 
         EndTextureMode();
 
+        Rectangle source = {
+            0.0f,
+            0.0f,
+            (float)virtualResolutions::VIRTUAL_WIDTH,
+            -(float)virtualResolutions::VIRTUAL_HEIGHT
+        };
 
-        BeginDrawing();
-            ClearBackground(RAYWHITE);
+        Rectangle dest = {
+            (float)offsetX,
+            (float)offsetY,
+            (float)scaledWidth,
+            (float)scaledHeight
+        };
 
-            Rectangle source = {
-                0,
-                0,
-                (float)virtualResolutions::VIRTUAL_WIDTH,
-                -(float)virtualResolutions::VIRTUAL_HEIGHT
-            };
+        DrawTexturePro(
+            bgRender.texture,
+            source,
+            dest,
+            { 0, 0 },
+            0.0f,
+            WHITE
+        );
 
-            Rectangle dest = {
-                (float)offsetX,
-                (float)offsetY,
-                (float)scaledWidth,
-                (float)scaledHeight
-            };
+        EndDrawing();
 
-            
-
-            DrawTexturePro(
-                bgRender.texture,
-                source,
-                dest,
-                { 0, 0 },
-                0.0f,
-                WHITE
-            );
-		EndDrawing();
         //----------------------------------------------------------------------------------
     }
     return 0;

@@ -2,6 +2,7 @@
 #include "raylib-cpp.hpp"
 #include "time.hpp"
 #include "animationHandler.hpp"
+#include "doom.hpp"
 #include <unordered_map>
 
 enum visible {
@@ -201,4 +202,8 @@ void menuInit() {
             DrawTextureEx(tex.loadSprite("exitH.png", UI), { 700, 700 }, 0.0f, 2.0f, Fade(WHITE, exitOpacity));
         }
     }
+}
+
+void test() {
+    DrawTextureEx(tex.loadSprite("supernova0.png", BACKGROUND), { 0, 0 }, 0.0f, 5.0f, WHITE);
 }
