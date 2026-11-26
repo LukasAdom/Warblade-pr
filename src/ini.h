@@ -6,28 +6,68 @@
 #include <string.h>
 #include <ctype.h>
 
-// This should work in both windows and unix systems. (hopefully)
+typedef struct config
+{
+	int WIDTH;
+	int HEIGHT;
+	int AUDIO;
+	int DIFFICULTY;
+	int FULLSCREEN;
+	int HIGHLIGHT;
+} config;
 
-void parseFromFile(const char* filePath) {
-	FILE* path = NULL;
-	fopen_s(&path , filePath, "rb"); // the mode "rb" reads the file in binary //
-	if (path) {
-		
-		size_t size = 0;
-		fseek(path, 0, SEEK_END);
-		size = ftell(path);
-		rewind(path);
+void loadConfig(const char* path, config* config) {
 
-		char* fileContent = (char*)malloc(size);
+	// DEFAULT CONFIG VALUES //
+	config->WIDTH = 960;
+	config->HEIGHT = 540;
+	config->AUDIO = 8;
+	config->DIFFICULTY = 1;
+	config->FULLSCREEN = 0;
+	config->HIGHLIGHT = 1;
 
-		if (fread(fileContent, size, 1 ,path) == 1) {
-			fileContent[size] = '\0'; // null terminator so the code knows when to stop reading
+	FILE* file = fopen("./config.ini", "r");
+
+	if (file == NULL) { return; }
+
+	char buffer[256];
+
+	while (fgets(buffer, sizeof(buffer), file)) {
+		char* seperator = strchr(buffer, '=');
+
+		if (seperator == NULL) { continue; }
+
+		*seperator = '\0';
+
+		char* key = buffer;
+		char* value = seperator + 1;
+
+		int num = atoi(value);
+
+		if (strcmp(key, "WIDTH") == 0) {
+			config->WIDTH = num;
 		}
-		free(fileContent);
-
-		fclose(path);
+		else if (strcmp(key, "HEIGHT") == 0) {
+			config->HEIGHT = num;
+		}
+		else if (strcmp(key, "AUDIO") == 0) {
+			config->AUDIO = num;
+		}
+		else if (strcmp(key, "DIFFICULTY") == 0) {
+			config->DIFFICULTY = num;
+		}
+		else if (strcmp(key, "FULLSCREEN") == 0) {
+			config->FULLSCREEN = num;
+		}
+		else if (strcmp(key, "HIGHLIGHT") == 0) {
+			config->HIGHLIGHT = num;
+		}
 	}
+	fclose(file);
 }
+
+
+// This should work in both windows and unix systems. (hopefully)
 
 void iniSave(int W, int H, int AUD, int DIFF, int FULL, int HIGH) {
 	FILE* path = NULL;
@@ -36,7 +76,7 @@ void iniSave(int W, int H, int AUD, int DIFF, int FULL, int HIGH) {
 
 	if (path) {
 		char fileBuffer[256];
-			* fileBuffer = '\0';
+			*fileBuffer = '\0';
 			strcat_s(fileBuffer, 256, "WIDTH=");
 			strcat_s(fileBuffer, 256, itoa(W, numBuffer, 10));
 			strcat_s(fileBuffer, 256, "\n");

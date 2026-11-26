@@ -22,8 +22,15 @@ int main(void)
 {
     // Initialization
     //--------------------------------------------------------------------------------------
-    const int screenWidth = 960;
-    const int screenHeight = 540;
+
+    config conf;
+
+    loadConfig("./config.ini", &conf);
+
+    bool loadConfigOnce = true;
+
+    const int screenWidth = conf.WIDTH;
+    const int screenHeight = conf.HEIGHT;
 
     // Texture/Sprite initializations ALWAYS goes AFTER window initialization
     InitWindow(screenWidth, screenHeight, "raylib [core] example - input keys");
@@ -39,7 +46,10 @@ int main(void)
 
     doomTransition.init(virtualResolutions::VIRTUAL_WIDTH, virtualResolutions::VIRTUAL_HEIGHT);
 
-    
+    if (conf.FULLSCREEN && loadConfigOnce) {
+        ToggleFullscreen();
+        loadConfigOnce = false;
+    }
 
     Player player;
     const float playerAccel = 1.0f;

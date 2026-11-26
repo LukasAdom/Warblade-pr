@@ -72,7 +72,6 @@ struct menu {
     };
 };
 
-
 menu::selected selectedButton = menu::selected::UNKOWN;
 menu::settings::settingSelect settingButton = menu::settings::settingSelect::NONE;
 
@@ -121,6 +120,134 @@ const float glowSpeed = 0.2f;
 
 spriteHandler tex;
 timer timedt;
+
+void loadSetting() {
+    config conf;
+    loadConfig("./config.ini", &conf);
+
+    switch (conf.DIFFICULTY)
+    {
+    case 0:
+        difficulty = menu::settings::diff::EASY;
+        break;
+
+    case 1:
+        difficulty = menu::settings::diff::NORMAL;
+        break;
+
+    case 2:
+        difficulty = menu::settings::diff::HARD;
+        break;
+
+    default:
+        difficulty = menu::settings::diff::EASY;
+        break;
+    }
+
+    switch (conf.WIDTH)
+    {
+    case 256:
+        resolution = menu::settings::res::RES0;
+        break;
+
+    case 960:
+        resolution = menu::settings::res::RES1;
+        break;
+
+    case 1280:
+        resolution = menu::settings::res::RES2;
+        break;
+
+    case 1366:
+        resolution = menu::settings::res::RES3;
+        break;
+
+    case 1600:
+        resolution = menu::settings::res::RES4;
+        break;
+
+    case 1920:
+        resolution = menu::settings::res::RES5;
+        break;
+
+    default:
+        resolution = menu::settings::res::RES1;
+        break;
+    }
+
+    switch (conf.AUDIO)
+    {
+    case 0:
+        audio = menu::settings::audio::AUD0;
+    break;
+
+    case 1:
+        audio = menu::settings::audio::AUD1;
+        break;
+
+    case 2:
+        audio = menu::settings::audio::AUD2;
+        break;
+
+    case 3:
+        audio = menu::settings::audio::AUD3;
+        break;
+
+    case 4:
+        audio = menu::settings::audio::AUD4;
+        break;
+
+    case 5:
+        audio = menu::settings::audio::AUD5;
+        break;
+
+    case 6:
+        audio = menu::settings::audio::AUD6;
+        break;
+
+    case 7:
+        audio = menu::settings::audio::AUD7;
+        break;
+
+    case 8:
+        audio = menu::settings::audio::AUD8;
+        break;
+
+    default:
+        audio = menu::settings::audio::AUD0;
+        break;
+    }
+
+    switch (conf.FULLSCREEN)
+    {
+    case 0:
+        fullscreen = menu::settings::full::FULL_OFF;
+        break;
+
+    case 1:
+        fullscreen = menu::settings::full::FULL_ON;
+        break;
+
+    default:
+        fullscreen = menu::settings::full::FULL_OFF;
+        break;
+    }
+
+    switch (conf.HIGHLIGHT)
+    {
+    case 0:
+        highlights = menu::settings::high::HIGH_OFF;
+        break;
+
+    case 1:
+        highlights = menu::settings::high::HIGH_ON;
+        break;
+
+    default:
+        highlights = menu::settings::high::HIGH_ON;
+        break;
+    }
+}
 
 void toggleFullSceenWindow(int windowW, int windowH) {
     if (!IsWindowFullscreen() && fullscreen == menu::settings::full::FULL_ON) {
@@ -254,17 +381,25 @@ void update() {
         break;
     }
 
+    config full;
+    loadConfig("./config.ini", &full);
+
     switch (fullscreen)
     {
     case menu::settings::full::FULL_OFF:
         DrawTextureEx(tex.loadSprite("off.png", UI), { 400, 375 }, 0.0f, 1.5f, WHITE);
-        toggleFullSceenWindow(W, H);
+        if (full.FULLSCREEN == 1) {
+            toggleFullSceenWindow(W, H);
+        }
         iniFULL = 0;
 
         break;
     case menu::settings::full::FULL_ON:
+
         DrawTextureEx(tex.loadSprite("on.png", UI), { 400, 375 }, 0.0f, 1.5f, WHITE);
-        toggleFullSceenWindow(W , H);
+        if (full.FULLSCREEN == 0) {
+            toggleFullSceenWindow(W, H);
+        }
         iniFULL = 1;
 
         break;
@@ -359,6 +494,7 @@ void menuInit() {
     checkOpacity();
 
     if (!hasEnded) {
+        loadSetting();
         if (timedt.getDelta() >= 2.0f && timedt.getDelta() <= 3.5f) {
             DrawTextureEx(tex.loadSprite("warbladeWHITE.png", UI), { 750 , 180 }, 0.0f, 2.0f, Fade(WHITE, (timedt.getDelta() - (2.0f)) / 0.8f));
         }
