@@ -6,10 +6,12 @@
 
 // Use this to declare what "type" the sprite is //
 enum spriteType {
-	BACKGROUND = 0,
-	ENTITY = 1,
-	ANIMATION = 2,
-	UI = 3
+	BACKGROUND,
+	ENTITY,
+	ANIMATION,
+	UI,
+	AUD,
+	RES
 };
 
 // Virtual resolution for scaling //
@@ -20,13 +22,13 @@ struct virtualResolutions{
 
 struct spriteHandler {
 
+	const char* prefix = "media/textures/";
 	std::unordered_map<const char*, Texture2D> textures;
 
 	// Load the texture and cahces it inside an unordered map for faster lookup
 	// And to not cause memory leaks.
 
 	 Texture2D& loadSprite(const char* name, int spriteType) {
-		const char* prefix = "media/textures/";
 
 		switch (spriteType) {
 		case BACKGROUND:
@@ -44,6 +46,14 @@ struct spriteHandler {
 		case UI:
 			prefix = "media/textures/UI/";
 		break;
+
+		case AUD:
+			prefix = "media/textures/UI/menu/audio/";
+		break;
+
+		case RES:
+			prefix = "media/textures/UI/menu/res/";
+			break;
 
 		default:
 			prefix = "media/textures/";

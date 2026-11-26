@@ -4,6 +4,7 @@
 #include "src/menu.hpp"
 #include "src/doom.hpp"
 #include "src/time.hpp"
+#include "src/ini.h"
 #include <vector>
 #include <iostream>
 #include <algorithm>
@@ -14,19 +15,6 @@ enum class Scene
     GAME
 };
 
-static void toggleFullSceenWindow(int windowW, int windowH) {
-    if (!IsWindowFullscreen()) {
-        int monitor = GetCurrentMonitor();
-
-        SetWindowSize(GetMonitorWidth(monitor), GetMonitorHeight(monitor));
-        ToggleFullscreen();
-    }
-    else {
-        ToggleFullscreen();
-        SetWindowSize(windowW, windowH);
-    }
-}
-
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
@@ -34,8 +22,8 @@ int main(void)
 {
     // Initialization
     //--------------------------------------------------------------------------------------
-    const int screenWidth = 800;
-    const int screenHeight = 450;
+    const int screenWidth = 960;
+    const int screenHeight = 540;
 
     // Texture/Sprite initializations ALWAYS goes AFTER window initialization
     InitWindow(screenWidth, screenHeight, "raylib [core] example - input keys");
@@ -51,7 +39,7 @@ int main(void)
 
     doomTransition.init(virtualResolutions::VIRTUAL_WIDTH, virtualResolutions::VIRTUAL_HEIGHT);
 
-    //toggleFullSceenWindow(screenWidth, screenHeight);
+    
 
     Player player;
     const float playerAccel = 1.0f;
@@ -77,11 +65,6 @@ int main(void)
 
         int offsetX = (GetScreenWidth() - scaledWidth) / 2;
         int offsetY = (GetScreenHeight() - scaledHeight) / 2;
-
-
-        if (IsKeyPressed(KEY_F11)) {
-            toggleFullSceenWindow(screenWidth, screenHeight);
-        }
 
         // Update
  	    //----------------------------------------------------------------------------------
