@@ -14,40 +14,46 @@ struct Entity
     const float dragScaler = 0.2f;
     const raylib::Vector2 maxVelocity = {10.0f, 10.0f};
     const raylib::Vector2 minVelocity = -maxVelocity;
+    int health;
 
     void setPos(float a, float b){
-        this->pos = Vector2{a, b};
+        this->pos = raylib::Vector2{a, b};
     }
 
-    void setPos(Vector2 vec2){
+    void setPos(raylib::Vector2 vec2)
+    {
         this->pos = vec2;
     }
 
     void setVelocity(float a, float b){
-        this->velocity = Vector2{a,b};
+        this->velocity = raylib::Vector2{a, b};
     }
 
-    void setVelocity(Vector2 vec2){
+    void setVelocity(raylib::Vector2 vec2)
+    {
         this->velocity = vec2;
     }
 
     void updateVelocity(float a, float b){
-        this->velocity += Vector2{a, b};
-        this->velocity.Clamp(minVelocity, maxVelocity);
+        this->velocity += raylib::Vector2{a, b};
+        this->velocity = this->velocity.Clamp(minVelocity, maxVelocity);
     }
 
-    void updateVelocity(Vector2 vec2){
+    void updateVelocity(raylib::Vector2 vec2)
+    {
         this->velocity += vec2;
-        this->velocity.Clamp(minVelocity, maxVelocity);
+        this->velocity = this->velocity.Clamp(minVelocity, maxVelocity);
     }
 
-    Vector2 operator+= (Vector2& vec2) {
+    raylib::Vector2 operator+=(raylib::Vector2 &vec2)
+    {
         this->updateVelocity(vec2);
         return this->velocity;
     }
 
     // without a constant source of velocity the entity will eventually reach 0 velocity
-    Vector2 applyDrag(){
+    raylib::Vector2 applyDrag()
+    {
         const float speed = this->velocity.Length();
 
         if (speed <= dragScaler) {
@@ -77,10 +83,17 @@ struct Entity
 
             return this->pos;
     }
+
+    // Call this to display said entity
+    void Draw()
+    {
+        // Raylib throws an exception and dumps the core when the texture isn't correctly loaded
+        // so I'm not sure if this check is neccesary
+        if (IsTextureValid(sprite)) sprite.Draw(pos);
+    }
 };
 
-struct Player : Entity
-{
+struct Player : Entity{
     Player(){
 
         Player::setPos(Vector2{ 925, 825 });
@@ -91,18 +104,12 @@ struct Player : Entity
         sprite = LoadTextureFromImage(ico);
         UnloadImage(ico);
     }
-
-    void Draw(){
-        // Raylib throws an exception and dumps the core when the texture isn't correctly loaded
-        // so I'm not sure if this check is 
-        if (IsTextureValid(sprite)) sprite.Draw(pos);
-    }
 };
 
 struct Enemy : Entity {
-    // Empty...
+    raylib::Rectangle hurtBox; // By making the hurtbox slightly smaller than the texture of the enemy we can improve the player experience in intense bullet hell moments
 };
 
 struct Projectile : Entity {
-
+    bool isFriendly; // To make sure player can't hit himself with his own projectiles
 };

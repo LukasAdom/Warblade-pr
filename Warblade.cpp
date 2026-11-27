@@ -5,6 +5,7 @@
 #include "src/doom.hpp"
 #include "src/time.hpp"
 #include "src/ini.h"
+#include "src/level_loader.hpp"
 #include <vector>
 #include <iostream>
 #include <algorithm>
@@ -15,6 +16,7 @@ enum class Scene
     LEVEL0,
     LEVEL1
 };
+
 
 //------------------------------------------------------------------------------------
 // Program main entry point
@@ -35,6 +37,7 @@ int main(void)
 
     const int screenWidth = conf.WIDTH;
     const int screenHeight = conf.HEIGHT;
+    const float playerAccel = 1.0f;
 
     // Texture/Sprite initializations ALWAYS goes AFTER window initialization
     InitWindow(screenWidth, screenHeight, "raylib [core] example - input keys");
@@ -72,15 +75,16 @@ int main(void)
     
 
     Player player;
-    const float playerAccel = 1.0f;
+    // TODO: create a global entity vector with type unique_ptr for easier application of .applyVelocity() and .Draw()
+    // it would be able to store every polymorth of entity such as player, enemy, projectile etc. in 1 vector
+
 
     timer timedt;
 
     //Texture2D bg = LoadTexture("media/textures/background/space0.png");
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
-    //--------------------------------------------------------------------------------------
-    
+
     // Main game loop
     while (!exitGame)    // Detect window close button or ESC key
     {
