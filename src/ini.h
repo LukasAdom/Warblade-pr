@@ -1,10 +1,12 @@
 #pragma once
 #include <stdio.h>
-#include "menu.hpp"
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+
+// NEVER FUCKING INCLUDE A HPP FILE HERE
+// IT BREAKS EVERYTHING!!!!
 
 typedef struct config
 {

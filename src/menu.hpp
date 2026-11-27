@@ -1,6 +1,8 @@
 #pragma once
+#include "raylib.h"
 #include "raylib-cpp.hpp"
 #include "time.hpp"
+#include "entity.hpp"
 #include "tools.hpp"
 #include "animationHandler.hpp"
 #include "doom.hpp"
@@ -114,12 +116,14 @@ static int iniHIGH;
 
 
 bool hasEnded = false;
+bool exitGame = false;
 
 const float btnFadeInSpeed = 15.0f;
 const float glowSpeed = 0.2f;
 
 spriteHandler tex;
 timer timedt;
+audioHandler audHandler;
 
 void loadSetting() {
     config conf;
@@ -251,10 +255,9 @@ void loadSetting() {
 
 void toggleFullSceenWindow(int windowW, int windowH) {
     if (!IsWindowFullscreen() && fullscreen == menu::settings::full::FULL_ON) {
-        int monitor = GetCurrentMonitor();
 
-        SetWindowSize(windowW, windowH);
         ToggleFullscreen();
+        SetWindowSize(windowW, windowH);
     }
     else if (IsWindowFullscreen() && fullscreen == menu::settings::full::FULL_OFF) {
         ToggleFullscreen();
@@ -302,54 +305,114 @@ void checkOpacity() {
 void update() {
     switch (audio)
     {
-    case menu::settings::AUD0:
+    case menu::settings::audio::AUD0:
         DrawTextureEx(tex.loadSprite("aud0.png", AUD), { 450, 125 }, 0.0f, 1.0f, WHITE);
+        SetMusicVolume(currM.CURRENT, 0.0f);
+        SetSoundVolume(currS.CURRENT, 0.0f);
         iniAUD = 0;
 
+        isSoundUnlocked = unlock::UNLOCKED;
+        PlaySound(audHandler.loadAudio("settingselect.mp3", SFX_UI));
+        soundConfigLoad();
+
         break;
-    case menu::settings::AUD1:
+    case menu::settings::audio::AUD1:
         DrawTextureEx(tex.loadSprite("aud1.png", AUD), { 450, 125 }, 0.0f, 1.0f, WHITE);
+       SetMusicVolume(currM.CURRENT, 0.125f);
+       SetSoundVolume(currS.CURRENT, 0.125f);
         iniAUD = 1;
 
+        isSoundUnlocked = unlock::UNLOCKED;
+        PlaySound(audHandler.loadAudio("settingselect.mp3", SFX_UI));
+        soundConfigLoad();
+
         break;
-    case menu::settings::AUD2:
+    case menu::settings::audio::AUD2:
         DrawTextureEx(tex.loadSprite("aud2.png", AUD), { 450, 125 }, 0.0f, 1.0f, WHITE);
+        SetMusicVolume(currM.CURRENT, 0.250f);
+        SetSoundVolume(currS.CURRENT, 0.250f);
         iniAUD = 2;
 
+        isSoundUnlocked = unlock::UNLOCKED;
+        PlaySound(audHandler.loadAudio("settingselect.mp3", SFX_UI));
+        soundConfigLoad();
+
         break;
-    case menu::settings::AUD3:
+    case menu::settings::audio::AUD3:
         DrawTextureEx(tex.loadSprite("aud3.png", AUD), { 450, 125 }, 0.0f, 1.0f, WHITE);
+        SetMusicVolume(currM.CURRENT, 0.375f);
+        SetSoundVolume(currS.CURRENT, 0.375f);
         iniAUD = 3;
 
+        isSoundUnlocked = unlock::UNLOCKED;
+        PlaySound(audHandler.loadAudio("settingselect.mp3", SFX_UI));
+        soundConfigLoad();
+
         break;
-    case menu::settings::AUD4:
+    case menu::settings::audio::AUD4:
         DrawTextureEx(tex.loadSprite("aud4.png", AUD), { 450, 125 }, 0.0f, 1.0f, WHITE);
+       SetMusicVolume(currM.CURRENT, 0.5f);
+       SetSoundVolume(currS.CURRENT, 0.5f);
         iniAUD = 4;
 
+        isSoundUnlocked = unlock::UNLOCKED;
+        PlaySound(audHandler.loadAudio("settingselect.mp3", SFX_UI));
+        soundConfigLoad();
+
         break;
-    case menu::settings::AUD5:
+    case menu::settings::audio::AUD5:
         DrawTextureEx(tex.loadSprite("aud5.png", AUD), { 450, 125 }, 0.0f, 1.0f, WHITE);
+       SetMusicVolume(currM.CURRENT, 0.625f);
+       SetSoundVolume(currS.CURRENT, 0.625f);
         iniAUD = 5;
 
+        isSoundUnlocked = unlock::UNLOCKED;
+        PlaySound(audHandler.loadAudio("settingselect.mp3", SFX_UI));
+        soundConfigLoad();
+
         break;
-    case menu::settings::AUD6:
+    case menu::settings::audio::AUD6:
         DrawTextureEx(tex.loadSprite("aud6.png", AUD), { 450, 125 }, 0.0f, 1.0f, WHITE);
+       SetMusicVolume(currM.CURRENT, 0.75f);
+       SetSoundVolume(currS.CURRENT, 0.75f);
         iniAUD = 6;
 
-        break;
-    case menu::settings::AUD7:
-        DrawTextureEx(tex.loadSprite("aud7.png", AUD), { 450, 125 }, 0.0f, 1.0f, WHITE);
-        iniAUD = 7;
+        isSoundUnlocked = unlock::UNLOCKED;
+        PlaySound(audHandler.loadAudio("settingselect.mp3", SFX_UI));
+        soundConfigLoad();
 
         break;
-    case menu::settings::AUD8:
+    case menu::settings::audio::AUD7:
+        DrawTextureEx(tex.loadSprite("aud7.png", AUD), { 450, 125 }, 0.0f, 1.0f, WHITE);
+       SetMusicVolume(currM.CURRENT, 0.875f);
+       SetSoundVolume(currS.CURRENT, 0.875f);
+        iniAUD = 7;
+
+        isSoundUnlocked = unlock::UNLOCKED;
+        PlaySound(audHandler.loadAudio("settingselect.mp3", SFX_UI));
+        soundConfigLoad();
+
+        break;
+    case menu::settings::audio::AUD8:
         DrawTextureEx(tex.loadSprite("aud8.png", AUD), { 450, 125 }, 0.0f, 1.0f, WHITE);
+       SetMusicVolume(currM.CURRENT, 1.0f);
+       SetSoundVolume(currS.CURRENT, 1.0f);
         iniAUD = 8;
+
+        isSoundUnlocked = unlock::UNLOCKED;
+        PlaySound(audHandler.loadAudio("settingselect.mp3", SFX_UI));
+        soundConfigLoad();
 
         break;
     default:
         DrawTextureEx(tex.loadSprite("aud0.png", AUD), { 450, 125 }, 0.0f, 1.0f, WHITE);
+       SetMusicVolume(currM.CURRENT, 0.0f);
+       SetSoundVolume(currS.CURRENT, 0.0f);
         iniAUD = 0;
+
+        isSoundUnlocked = unlock::UNLOCKED;
+        PlaySound(audHandler.loadAudio("settingselect.mp3", SFX_UI));
+        soundConfigLoad();
 
         break;
     }
@@ -360,11 +423,19 @@ void update() {
         DrawTextureEx(tex.loadSprite("easy.png", UI), { 400, 255 }, 0.0f, 1.5f, WHITE);
         iniDIFF = 0;
 
+        isSoundUnlocked = unlock::UNLOCKED;
+        PlaySound(audHandler.loadAudio("settingselect.mp3", SFX_UI));
+        soundConfigLoad();
+
         break;
 
     case menu::settings::diff::NORMAL:
         DrawTextureEx(tex.loadSprite("normal.png", UI), { 440, 240 }, 0.0f, 1.5f, WHITE);
         iniDIFF = 1;
+
+        isSoundUnlocked = unlock::UNLOCKED;
+        PlaySound(audHandler.loadAudio("settingselect.mp3", SFX_UI));
+        soundConfigLoad();
 
         break;
 
@@ -372,11 +443,19 @@ void update() {
         DrawTextureEx(tex.loadSprite("hard.png", UI), { 400, 250 }, 0.0f, 1.5f, WHITE);
         iniDIFF = 2;
 
+        isSoundUnlocked = unlock::UNLOCKED;
+        PlaySound(audHandler.loadAudio("settingselect.mp3", SFX_UI));
+        soundConfigLoad();
+
         break;
 
     default:
         DrawTextureEx(tex.loadSprite("easy.png", UI), { 400, 255 }, 0.0f, 1.5f, WHITE);
         iniDIFF = 0;
+
+        isSoundUnlocked = unlock::UNLOCKED;
+        PlaySound(audHandler.loadAudio("settingselect.mp3", SFX_UI));
+        soundConfigLoad();
 
         break;
     }
@@ -388,15 +467,17 @@ void update() {
     {
     case menu::settings::full::FULL_OFF:
         DrawTextureEx(tex.loadSprite("off.png", UI), { 400, 375 }, 0.0f, 1.5f, WHITE);
+
         if (full.FULLSCREEN == 1) {
             toggleFullSceenWindow(W, H);
         }
+
         iniFULL = 0;
 
         break;
     case menu::settings::full::FULL_ON:
 
-        DrawTextureEx(tex.loadSprite("on.png", UI), { 400, 375 }, 0.0f, 1.5f, WHITE);
+        DrawTextureEx(tex.loadSprite("on.png", UI), { 400, 375 }, 0.0f, 1.5f, WHITE);   
         if (full.FULLSCREEN == 0) {
             toggleFullSceenWindow(W, H);
         }
@@ -411,70 +492,98 @@ void update() {
         DrawTextureEx(tex.loadSprite("on.png", UI), { 400, 500 }, 0.0f, 1.5f, WHITE);
         iniHIGH = 1;
 
+        isSoundUnlocked = unlock::UNLOCKED;
+        PlaySound(audHandler.loadAudio("settingselect.mp3", SFX_UI));
+        soundConfigLoad();
+
         break;
 
     case menu::settings::high::HIGH_OFF:
         DrawTextureEx(tex.loadSprite("off.png", UI), { 400, 500 }, 0.0f, 1.5f, WHITE);
         iniHIGH = 0;
 
+        isSoundUnlocked = unlock::UNLOCKED;
+        PlaySound(audHandler.loadAudio("settingselect.mp3", SFX_UI));
+        soundConfigLoad();
         break;
 
     default:
         DrawTextureEx(tex.loadSprite("on.png", UI), { 400, 500 }, 0.0f, 1.5f, WHITE);
         iniHIGH = 1;
 
+        isSoundUnlocked = unlock::UNLOCKED;
+        PlaySound(audHandler.loadAudio("settingselect.mp3", SFX_UI));
+        soundConfigLoad();
         break;
     }
 
     switch (resolution)
     {
-    case menu::settings::RES0:
+    case menu::settings::res::RES0:
         DrawTextureEx(tex.loadSprite("256.png", RES), { 480, 10 }, 0.0f, 1.0f, WHITE);
         SetWindowSize(256,144);
 
         W = 256;
         H = 144;
 
+        isSoundUnlocked = unlock::UNLOCKED;
+        PlaySound(audHandler.loadAudio("settingselect.mp3", SFX_UI));
+        soundConfigLoad();
         break;
-    case menu::settings::RES1:
+    case menu::settings::res::RES1:
         DrawTextureEx(tex.loadSprite("960.png", RES), { 480, 10 }, 0.0f, 1.0f, WHITE);
         SetWindowSize(960, 540);
 
         W = 960;
         H = 540;
                
+        isSoundUnlocked = unlock::UNLOCKED;
+        PlaySound(audHandler.loadAudio("settingselect.mp3", SFX_UI));
+        soundConfigLoad();
         break;
-    case menu::settings::RES2:
+    case menu::settings::res::RES2:
         DrawTextureEx(tex.loadSprite("1280.png", RES), { 480, 10 }, 0.0f, 1.0f, WHITE);
         SetWindowSize(1280, 720);
 
         W = 1280;
         H = 720;
 
+        isSoundUnlocked = unlock::UNLOCKED;
+        PlaySound(audHandler.loadAudio("settingselect.mp3", SFX_UI));
+        soundConfigLoad();
         break;
-    case menu::settings::RES3:
+    case menu::settings::res::RES3:
         DrawTextureEx(tex.loadSprite("1366.png", RES), { 480, 10 }, 0.0f, 1.0f, WHITE);
         SetWindowSize(1366, 768);
 
         W = 1366;
         H = 768;
 
+        isSoundUnlocked = unlock::UNLOCKED;
+        PlaySound(audHandler.loadAudio("settingselect.mp3", SFX_UI));
+        soundConfigLoad();
         break;
-    case menu::settings::RES4:
+    case menu::settings::res::RES4:
         DrawTextureEx(tex.loadSprite("1600.png", RES), { 480, 10 }, 0.0f, 1.0f, WHITE);
         SetWindowSize(1600, 900);
 
         W = 1600;
         H = 900;
 
+        isSoundUnlocked = unlock::UNLOCKED;
+        PlaySound(audHandler.loadAudio("settingselect.mp3", SFX_UI));
+        soundConfigLoad();
         break;
-    case menu::settings::RES5:
+    case menu::settings::res::RES5:
         DrawTextureEx(tex.loadSprite("1920.png", RES), { 480, 10 }, 0.0f, 1.0f, WHITE);
         SetWindowSize(1920, 1080);
 
         W = 1920;
         H = 1080;
 
+        isSoundUnlocked = unlock::UNLOCKED;
+        PlaySound(audHandler.loadAudio("settingselect.mp3", SFX_UI));
+        soundConfigLoad();
         break;
     default:
         DrawTextureEx(tex.loadSprite("960.png", RES), { 480, 10 }, 0.0f, 1.0f, WHITE);
@@ -483,6 +592,9 @@ void update() {
         W = 960;
         H = 540;
 
+        isSoundUnlocked = unlock::UNLOCKED;
+        PlaySound(audHandler.loadAudio("settingselect.mp3", SFX_UI));
+        soundConfigLoad();
         break;
     }
 
@@ -495,6 +607,7 @@ void menuInit() {
 
     if (!hasEnded) {
         loadSetting();
+
         if (timedt.getDelta() >= 2.0f && timedt.getDelta() <= 3.5f) {
             DrawTextureEx(tex.loadSprite("warbladeWHITE.png", UI), { 750 , 180 }, 0.0f, 2.0f, Fade(WHITE, (timedt.getDelta() - (2.0f)) / 0.8f));
         }
@@ -527,6 +640,11 @@ void menuInit() {
         }
 
         if (selectedButton == menu::selected::UNKOWN) {
+            soundConfigLoad();
+
+            isSoundUnlocked = unlock::UNLOCKED;
+            PlaySound(audHandler.loadAudio("select.mp3", SFX_UI));
+
             DrawTextureEx(tex.loadSprite("play.png", UI), { 400, 500 }, 0.0f, 2.0f, WHITE);
             DrawTextureEx(tex.loadSprite("setting.png", UI), { 1100, 500 }, 0.0f, 2.0f, WHITE);
             DrawTextureEx(tex.loadSprite("exit.png", UI), { 700, 700 }, 0.0f, 2.0f, WHITE);
@@ -537,6 +655,8 @@ void menuInit() {
 
 
         if (selectedButton == menu::selected::SETTING) {
+            soundConfigLoad();
+
             playOpacity = 0.0f;
             exitOpacity = 0.0f;
 
@@ -546,6 +666,9 @@ void menuInit() {
             settingOpacity += GetFrameTime() * btnFadeInSpeed;
             settingGOpacity += GetFrameTime() * glowSpeed;
 
+            isSoundUnlocked = unlock::UNLOCKED;
+            PlaySound(audHandler.loadAudio("select.mp3", SFX_UI));
+
             checkOpacity();
 
             DrawTextureEx(tex.loadSprite("play.png", UI), { 400, 500 }, 0.0f, 2.0f, WHITE);
@@ -554,12 +677,16 @@ void menuInit() {
 
             DrawTextureEx(tex.loadSprite("black.png", UI), { 1100, 500 }, 0.0f, 2.0f, Fade(BLACK, settingGOpacity));
             DrawTextureEx(tex.loadSprite("settingH.png", UI), { 1100, 500 }, 0.0f, 2.0f, Fade(WHITE, settingOpacity));
-
+             
         }
 
         if (settingButton == menu::settings::settingSelect::RESOLUTION) {
             selectedButton = menu::selected::INVIS;
             hideTitle = ON;
+
+            isSoundUnlocked = unlock::UNLOCKED;
+            PlaySound(audHandler.loadAudio("select.mp3", SFX_UI));
+            
 
             DrawTextureEx(tex.loadSprite("res.png", UI), { 100, 0 }, 0.0f, 1.5f, WHITE);
 
@@ -581,6 +708,9 @@ void menuInit() {
 
         if (settingButton == menu::settings::settingSelect::AUDIO) {
 
+            isSoundUnlocked = unlock::UNLOCKED;
+            PlaySound(audHandler.loadAudio("select.mp3", SFX_UI));
+
             DrawTextureEx(tex.loadSprite("res.png", UI), { 100, 0 }, 0.0f, 1.5f, WHITE);
             DrawTextureEx(tex.loadSprite("audio.png", UI), { 100, 125 }, 0.0f, 1.5f, WHITE);
 
@@ -598,6 +728,9 @@ void menuInit() {
         }
 
         if (settingButton == menu::settings::settingSelect::DIFF) {
+
+            isSoundUnlocked = unlock::UNLOCKED;
+            PlaySound(audHandler.loadAudio("select.mp3", SFX_UI));
 
             DrawTextureEx(tex.loadSprite("res.png", UI), { 100, 0 }, 0.0f, 1.5f, WHITE);
             DrawTextureEx(tex.loadSprite("audio.png", UI), { 100, 125 }, 0.0f, 1.5f, WHITE);
@@ -617,6 +750,9 @@ void menuInit() {
 
         if (settingButton == menu::settings::settingSelect::FULL) {
 
+            isSoundUnlocked = unlock::UNLOCKED;
+            PlaySound(audHandler.loadAudio("select.mp3", SFX_UI));
+
             DrawTextureEx(tex.loadSprite("res.png", UI), { 100, 0 }, 0.0f, 1.5f, WHITE);
             DrawTextureEx(tex.loadSprite("audio.png", UI), { 100, 125 }, 0.0f, 1.5f, WHITE);
 
@@ -635,6 +771,10 @@ void menuInit() {
         }
 
         if (settingButton == menu::settings::settingSelect::HIGH) {
+
+            isSoundUnlocked = unlock::UNLOCKED;
+            PlaySound(audHandler.loadAudio("select.mp3", SFX_UI));
+
             exitOpacity = 0.0f;
             exitGOpacity = 0.0f;
 
@@ -659,6 +799,9 @@ void menuInit() {
             exitOpacity += GetFrameTime() * btnFadeInSpeed;
             exitGOpacity += GetFrameTime() * glowSpeed;
 
+            isSoundUnlocked = unlock::UNLOCKED;
+            PlaySound(audHandler.loadAudio("select.mp3", SFX_UI));
+
             checkOpacity();
 
             DrawTextureEx(tex.loadSprite("res.png", UI), { 100, 0 }, 0.0f, 1.5f, WHITE);
@@ -677,6 +820,9 @@ void menuInit() {
         }
 
         if (selectedButton == menu::selected::PLAY) {
+
+            soundConfigLoad();
+
             settingOpacity = 0.0f;
             exitOpacity = 0.0f;
 
@@ -685,6 +831,9 @@ void menuInit() {
 
             playOpacity += GetFrameTime() * btnFadeInSpeed;
             playGOpacity += GetFrameTime() * glowSpeed;
+
+            isSoundUnlocked = unlock::UNLOCKED;
+            PlaySound(audHandler.loadAudio("select.mp3", SFX_UI));
 
             checkOpacity();
 
@@ -701,6 +850,8 @@ void menuInit() {
         }
 
         if (selectedButton == menu::selected::EXIT) {
+            soundConfigLoad();
+
             settingOpacity = 0.0f;
             playOpacity = 0.0f;
 
@@ -709,6 +860,9 @@ void menuInit() {
 
             exitOpacity += GetFrameTime() * btnFadeInSpeed;
             exitGOpacity += GetFrameTime() * glowSpeed;
+
+            isSoundUnlocked = unlock::UNLOCKED;
+            PlaySound(audHandler.loadAudio("select.mp3", SFX_UI));
 
             checkOpacity();
 
@@ -889,9 +1043,13 @@ void menuInit() {
 
             hideTitle = OFF;
         }
+        else if (IsKeyPressed(KEY_ENTER) && selectedButton == menu::selected::EXIT) {
+            exitGame = true;
+        }
     }
 }
 
+// little test for doom.hpp
 void test() {
     DrawTextureEx(tex.loadSprite("supernova0.png", BACKGROUND), { 0, 0 }, 0.0f, 5.0f, WHITE);
 }

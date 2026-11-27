@@ -12,7 +12,8 @@
 enum class Scene
 {
     MAIN_MENU,
-    GAME
+    LEVEL0,
+    LEVEL1
 };
 
 //------------------------------------------------------------------------------------
@@ -24,10 +25,13 @@ int main(void)
     //--------------------------------------------------------------------------------------
 
     config conf;
+    currentMusic music;
 
     loadConfig("./config.ini", &conf);
 
     bool loadConfigOnce = true;
+    bool startNewLevel = false;
+    bool exitFromMenu = false;
 
     const int screenWidth = conf.WIDTH;
     const int screenHeight = conf.HEIGHT;
@@ -35,8 +39,17 @@ int main(void)
     // Texture/Sprite initializations ALWAYS goes AFTER window initialization
     InitWindow(screenWidth, screenHeight, "raylib [core] example - input keys");
 
+    InitAudioDevice();
+
+    HideCursor();
+
+    if (!IsAudioDeviceReady()) {
+        TraceLog(LOG_ERROR, "Audio device failed to initialize!");
+    }
+
     Scene currentScene = Scene::MAIN_MENU;
     Dmelt doomTransition;
+    musicStream musicHandler;
 
     // Don't be a dumbass like me and put the background or ANY initializations before the window initialization...
     RenderTexture2D bgRender = LoadRenderTexture(
@@ -46,10 +59,17 @@ int main(void)
 
     doomTransition.init(virtualResolutions::VIRTUAL_WIDTH, virtualResolutions::VIRTUAL_HEIGHT);
 
-    if (conf.FULLSCREEN && loadConfigOnce) {
+    // Fullscreen after initialization from config
+    if (conf.FULLSCREEN == 1 && loadConfigOnce) {
         ToggleFullscreen();
+        SetWindowSize(conf.WIDTH, conf.HEIGHT);
         loadConfigOnce = false;
     }
+
+    // temp music (later will change it)
+    PlayMusicStream(musicHandler.loadMusic("title0.mp3"));
+
+    
 
     Player player;
     const float playerAccel = 1.0f;
@@ -60,10 +80,27 @@ int main(void)
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
-
+    
     // Main game loop
-    while (!WindowShouldClose())    // Detect window close button or ESC key
+    while (!exitGame)    // Detect window close button or ESC key
     {
+
+        if (IsKeyPressed(KEY_T) && currentScene == Scene::LEVEL0) {
+            startNewLevel = true;
+        }
+
+        if (IsKeyPressed(KEY_ESCAPE) && currentScene == Scene::MAIN_MENU) {
+            exitGame = true;
+        }
+
+        // Later I will create function for this exact issue
+        if (IsKeyPressed(KEY_ESCAPE) && (currentScene == Scene::LEVEL0 || currentScene == Scene::LEVEL1)) {
+            menuVisible = visible::ON;
+            currentScene = Scene::MAIN_MENU;
+        }
+
+        UpdateMusicStream(currM.CURRENT); // Updates any current sound that is palying through the "Music Streaming" pipeline
+        audioConfigLoad();
 
         float scale = std::min(
             (float)GetScreenWidth() / virtualResolutions::VIRTUAL_WIDTH,
@@ -78,12 +115,16 @@ int main(void)
 
         // Update
  	    //----------------------------------------------------------------------------------
-        if (IsKeyDown(KEY_RIGHT)) player.updateVelocity(playerAccel, 0.0f);
-        if (IsKeyDown(KEY_LEFT)) player.updateVelocity(-playerAccel, 0.0f);
-        if (IsKeyDown(KEY_UP)) player.updateVelocity(0.0f, -playerAccel);
-        if (IsKeyDown(KEY_DOWN)) player.updateVelocity(0.0f, playerAccel);
+        if (menuVisible == visible::OFF) { // Makes sure the player can't move around while the menu is visible
+            if (IsKeyDown(KEY_RIGHT)) player.updateVelocity(playerAccel, 0.0f);
+            if (IsKeyDown(KEY_LEFT)) player.updateVelocity(-playerAccel, 0.0f);
+            if (IsKeyDown(KEY_UP)) player.updateVelocity(0.0f, -playerAccel);
+            if (IsKeyDown(KEY_DOWN)) player.updateVelocity(0.0f, playerAccel);
+        
 
-        player.applyVelocity();
+            player.applyVelocity();
+
+        }
         //----------------------------------------------------------------------------------
         // Draw
         //----------------------------------------------------------------------------------
@@ -92,12 +133,12 @@ int main(void)
 
         ClearBackground(BLACK);
 
+        // Check out the documentation inside doom.hpp to understand how to set this up
         if (currentScene == Scene::MAIN_MENU &&
             menuVisible == visible::OFF)
         {
             doomTransition.start(
-                [&]()
-                {
+                [&](){
                     DrawTextureEx(
                         tex.loadSprite("space0.png", BACKGROUND),
                         { 0, 0 },
@@ -109,14 +150,37 @@ int main(void)
                     menuInit();
                 },
 
-                [&]()
-                {
+                [&](){
                     test();
                     player.Draw();
                 }
             );
 
-            currentScene = Scene::GAME;
+            currentScene = Scene::LEVEL0;
+        }
+        else if (currentScene == Scene::LEVEL0 &&
+            menuVisible == visible::OFF && startNewLevel) {
+            startNewLevel = false;
+
+            doomTransition.start(
+                [&](){
+                    test();
+                    player.Draw();
+                },
+
+                [&](){
+                    
+                    DrawTextureEx(
+                        tex.loadSprite("supernova1.png", BACKGROUND),
+                        { 0, 0 },
+                        0.0f,
+                        7.0f,
+                        WHITE);
+
+                    player.Draw();
+                }
+            );
+            currentScene = Scene::LEVEL1;
         }
 
         BeginTextureMode(bgRender);
@@ -145,15 +209,30 @@ int main(void)
                 menuInit();
                 break;
 
-            case Scene::GAME:
+            case Scene::LEVEL0:
 
                 test();
                 player.Draw();
                 break;
+
+            case Scene::LEVEL1:
+
+                DrawTextureEx(
+                    tex.loadSprite("supernova1.png", BACKGROUND),
+                    { 0, 0 },
+                    0.0f,
+                    7.0f,
+                    WHITE);
+
+                player.Draw();
+                break;
             }
+
         }
 
         EndTextureMode();
+
+        // virtual resolutions used for proper scaling //
 
         Rectangle source = {
             0.0f,

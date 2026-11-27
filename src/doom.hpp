@@ -6,7 +6,28 @@
 #include <algorithm>
 
 /*  DOCUMENTATION
+    If you want to transition from one "scene" to another
+    use the function doomTransition.start() under an if statment, otherwise you'd be stuck in
+    the same animation loop forever.
 
+    doomTransition.start() takes in 2 void functions, but either they have to be standardized (no parameter functions)
+    or use lambdas, something like this:
+
+    doomTransition.start(
+                [&](){
+                    Scene0();
+                },
+
+                [&](){
+                    Scene1();
+                }
+            );
+
+    Later you need to set the variable "currentScene" by adding a new enum inside the "enum class Scene", or using any available
+    which depends what do you want to do with it.
+
+    Now you need to set up the "currentScene" inside a switch statement, whatever is inside the switch statement
+    will be the thing that you'll see on the screen after the transition has ended.
 
 */
 

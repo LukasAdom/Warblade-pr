@@ -1,6 +1,7 @@
 #pragma once
 #include "raylib-cpp.hpp"
 #include "tools.hpp"
+#include "menu.hpp"
 
 // Base object for further structs such as Player, Enemy etc.
 struct Entity
@@ -61,20 +62,20 @@ struct Entity
 
     // This needs to be called if you want the entity to move
     Vector2 applyVelocity(bool applyDrag = true){
-        if(applyDrag) this->applyDrag();
-        raylib::Vector2 futurePosition = this->pos + this->velocity;
+            if (applyDrag) this->applyDrag();
+            raylib::Vector2 futurePosition = this->pos + this->velocity;
 
-        // Bounds check
-        // TODO: Make it account for size of sprite and maybe find a less glitchy implementation
-        if (futurePosition.x < virtualResolutions::VIRTUAL_WIDTH 
-            && futurePosition.x >= 0 
-            && futurePosition.y < virtualResolutions::VIRTUAL_HEIGHT
-            && futurePosition.y >= 0){
-            this->setPos(futurePosition);
+            // Bounds check
+            // TODO: Make it account for size of sprite and maybe find a less glitchy implementation
+            if (futurePosition.x < virtualResolutions::VIRTUAL_WIDTH
+                && futurePosition.x >= 0
+                && futurePosition.y < virtualResolutions::VIRTUAL_HEIGHT
+                && futurePosition.y >= 0) {
+                this->setPos(futurePosition);
+                return this->pos;
+            }
+
             return this->pos;
-        }
-        
-        return this->pos;
     }
 };
 
@@ -82,9 +83,10 @@ struct Player : Entity
 {
     Player(){
 
-        // TODO: Get an actually trasnparant PNG
         Player::setPos(Vector2{ 925, 825 });
-        Image ico = LoadImage("media/textures/playerOutline.png");
+
+        Image ico = LoadImage("media/textures/playerOutline.png"); //TODO: Allow the player to change the highligts
+
         ImageResize(&ico, 93, 97); // From what I can tell textures can't be resized or edited after being loaded. Consider declaring sprite as image?
         sprite = LoadTextureFromImage(ico);
         UnloadImage(ico);
